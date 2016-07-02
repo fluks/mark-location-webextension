@@ -1,4 +1,3 @@
-(function() {
 'use strict';
 
 // Currently, KeyboardEvent object doesn't have a key property in Chromium.
@@ -75,4 +74,3 @@ var keydownHandler = function(e) {
 };
 
 window.addEventListener('keydown', keydownHandler);
-})();
