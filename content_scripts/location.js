@@ -14,7 +14,7 @@ var
     keyGoto = isFirefox ? 228 : 222,
     // Time window in ms after pressing a mark or goto key to register
     // a number key press.
-    timeDeltaIndex = 500,
+    timeDeltaIndex = 1000,
     marks = [],
     markPressed = false,
     gotoPressed = false,
