@@ -8,10 +8,9 @@ var testIsFirefox = function() {
 var isFirefox = testIsFirefox();
 var
     // KeyboardEvent.key values for Firefox and KeyboardEvent.keyCodes for
-    // Chromium. On my Finnish keyboard layout keyMark is 'å' and keyGoto
-    // is 'ä'.
-    keyMark = isFirefox ? 229 : 221,
-    keyGoto = isFirefox ? 228 : 222,
+    // Chromium. Mark key is a comma and goto key is a dot.
+    keyMark = isFirefox ? 44 : 188,
+    keyGoto = isFirefox ? 46 : 190,
     // Time window in ms after pressing a mark or goto key to register
     // a number key press.
     timeDeltaIndex = 1000,
