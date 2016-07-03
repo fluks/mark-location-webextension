@@ -9,7 +9,7 @@ const IS_FIREFOX = true,
     // a number key press.
     TIME_DELTA_INDEX = 1000,
     MARKS = [];
-var
+let
     markPressed = false,
     gotoPressed = false,
     markTimeout,
@@ -25,7 +25,7 @@ const crossBrowserKey = function(e) {
 
 const keydownHandler = function(e) {
     e = crossBrowserKey(e);
-    var maybeInt = String.fromCharCode(e.key);
+    let maybeInt = String.fromCharCode(e.key);
 
     if (e.key === MARK_KEY && e.ctrlKey) {
         window.clearTimeout(markTimeout);
@@ -48,7 +48,7 @@ const keydownHandler = function(e) {
         }, TIME_DELTA_INDEX);
     }
     else if ('1234567890'.includes(maybeInt)) {
-        var i = parseInt(maybeInt);
+        let i = parseInt(maybeInt);
 
         if (markPressed) {
             window.clearTimeout(markTimeout);
@@ -60,7 +60,7 @@ const keydownHandler = function(e) {
             window.clearTimeout(gotoTimeout);
             gotoPressed = false;
 
-            var offsets = MARKS[i];
+            let offsets = MARKS[i];
             if (offsets)
                 window.scrollTo(offsets.x, offsets.y);
         }
