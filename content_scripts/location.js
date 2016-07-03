@@ -1,11 +1,7 @@
 'use strict';
 
-// Currently, KeyboardEvent object doesn't have a key property in Chromium.
-var testIsFirefox = function() {
-    return 'key' in new KeyboardEvent(1);
-};
+const isFirefox = true;
 
-var isFirefox = testIsFirefox();
 var
     // KeyboardEvent.key values for Firefox and KeyboardEvent.keyCodes for
     // Chromium. Mark key is a comma and goto key is a dot.
