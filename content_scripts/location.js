@@ -1,22 +1,21 @@
 'use strict';
 
-const isFirefox = true;
-
-var
+const IS_FIREFOX = true,
     // KeyboardEvent.key values for Firefox and KeyboardEvent.keyCodes for
     // Chromium. Mark key is a comma and goto key is a dot.
-    keyMark = isFirefox ? 44 : 188,
-    keyGoto = isFirefox ? 46 : 190,
+    MARK_KEY = IS_FIREFOX ? 44 : 188,
+    GOTO_KEY = IS_FIREFOX ? 46 : 190,
     // Time window in ms after pressing a mark or goto key to register
     // a number key press.
-    timeDeltaIndex = 1000,
-    marks = [],
+    TIME_DELTA_INDEX = 1000,
+    MARKS = [];
+var
     markPressed = false,
     gotoPressed = false,
     markTimeout,
     gotoTimeout;
 
-var crossBrowserKey = function(e) {
+const crossBrowserKey = function(e) {
     return {
         // Use integral values for both browsers, although different.
         key: e.key === undefined ? e.keyCode : e.key.charCodeAt(0),
@@ -24,11 +23,11 @@ var crossBrowserKey = function(e) {
     };
 };
 
-var keydownHandler = function(e) {
+const keydownHandler = function(e) {
     e = crossBrowserKey(e);
     var maybeInt = String.fromCharCode(e.key);
 
-    if (e.key === keyMark && e.ctrlKey) {
+    if (e.key === MARK_KEY && e.ctrlKey) {
         window.clearTimeout(markTimeout);
         window.clearTimeout(gotoTimeout);
         gotoPressed = false;
@@ -36,9 +35,9 @@ var keydownHandler = function(e) {
         markPressed = true;
         markTimeout = window.setTimeout(function() {
             markPressed = false;
-        }, timeDeltaIndex);
+        }, TIME_DELTA_INDEX);
     }
-    else if (e.key === keyGoto && e.ctrlKey) {
+    else if (e.key === GOTO_KEY && e.ctrlKey) {
         window.clearTimeout(markTimeout);
         window.clearTimeout(gotoTimeout);
         markPressed = false;
@@ -46,7 +45,7 @@ var keydownHandler = function(e) {
         gotoPressed = true;
         gotoTimeout = window.setTimeout(function() {
             gotoPressed = false;
-        }, timeDeltaIndex);
+        }, TIME_DELTA_INDEX);
     }
     else if ('1234567890'.includes(maybeInt)) {
         var i = parseInt(maybeInt);
@@ -55,13 +54,13 @@ var keydownHandler = function(e) {
             window.clearTimeout(markTimeout);
             markPressed = false;
 
-            marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
+            MARKS[i] = { x: window.pageXOffset, y: window.pageYOffset };
         }
         else if (gotoPressed) {
             window.clearTimeout(gotoTimeout);
             gotoPressed = false;
 
-            var offsets = marks[i];
+            var offsets = MARKS[i];
             if (offsets)
                 window.scrollTo(offsets.x, offsets.y);
         }
