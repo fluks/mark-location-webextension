@@ -1,5 +1,6 @@
 'use strict';
 
+// Controlled by makefile target.
 const IS_FIREFOX = true,
     // KeyboardEvent.key values for Firefox and KeyboardEvent.keyCodes for
     // Chromium. Mark key is a comma and goto key is a dot.
@@ -15,6 +16,13 @@ let
     markTimeout,
     gotoTimeout;
 
+/**
+ * Get the key pressed under the same property regardless of the browser.
+ * @param {Object} e - KeyboardEvent
+ * @return {Object} *key* - the key pressed as a number. *ctrlKey* - boolean
+ * whether control was pressed or not.
+ * @todo Return KeyboardEvent but add key property if needed.
+ */
 const crossBrowserKey = function(e) {
     return {
         // Use integral values for both browsers, although different.
@@ -23,6 +31,11 @@ const crossBrowserKey = function(e) {
     };
 };
 
+/**
+ * Handle the keys pressed.
+ * Mark a location or go to a location on a page.
+ * @param {Object} e - Object returned by the {@link crossBrowserKey} function.
+ */
 const keydownHandler = function(e) {
     e = crossBrowserKey(e);
     let maybeInt = String.fromCharCode(e.key);

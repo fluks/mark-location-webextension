@@ -1,6 +1,7 @@
 dirs := content_scripts icons
+js := content_scripts/location.js
 
-.PHONY: firefox clean change_to_firefox change_to_chromium
+.PHONY: firefox clean change_to_firefox change_to_chromium doc
 
 firefox: change_to_firefox
 	cp firefox/manifest.json .
@@ -12,6 +13,9 @@ change_to_firefox:
 
 change_to_chromium:
 	sed -i 's/isFirefox = .*;/isFirefox = false;/' content_scripts/location.js
+
+doc:
+	jsdoc -c conf.json $(js)
 
 clean:
 	rm mark_location_firefox.xpi
