@@ -1,7 +1,7 @@
 dirs := content_scripts icons
 js := content_scripts/location.js
 
-.PHONY: firefox clean change_to_firefox change_to_chromium doc
+.PHONY: firefox clean change_to_firefox change_to_chromium lint doc
 
 firefox: change_to_firefox
 	cp firefox/manifest.json .
@@ -13,6 +13,9 @@ change_to_firefox:
 
 change_to_chromium:
 	sed -i 's/isFirefox = .*;/isFirefox = false;/' content_scripts/location.js
+
+lint:
+	eslint --env es6 $(js)
 
 doc:
 	jsdoc -c conf.json $(js)
