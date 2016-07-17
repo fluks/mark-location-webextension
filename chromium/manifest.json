@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "Mark Location",
+    "version": "0.1",
+    "description": "Mark a location on a page and scroll to it.",
+
+    "icons": {
+        "16": "icons/mark_location_16.png",
+        "32": "icons/mark_location_32.png",
+        "48": "icons/mark_location_48.png",
+        "128": "icons/mark_location_128.png"
+    },
+
+    "content_scripts": [
+        {
+            "matches": [ "*://*/*" ],
+            "js": [ "content_scripts/location.js" ]
+        }
+    ]
+}
