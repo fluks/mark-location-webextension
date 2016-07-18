@@ -1,11 +1,9 @@
 'use strict';
 
-// Controlled by makefile target.
-const IS_FIREFOX = true,
-    // KeyboardEvent.key values for Firefox and KeyboardEvent.keyCodes for
-    // Chromium. Mark key is a comma and goto key is a dot.
-    MARK_KEY = IS_FIREFOX ? 44 : 188,
-    GOTO_KEY = IS_FIREFOX ? 46 : 190,
+const
+    // Mark key is a comma and goto key is a dot.
+    MARK_KEY = 44,
+    GOTO_KEY = 46,
     // Time window in ms after pressing a mark or goto key to register
     // a number key press.
     TIME_DELTA_INDEX = 1000,

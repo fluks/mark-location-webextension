@@ -1,1 +1,4 @@
 out
+ff_addons_page/
+*.xpi
+manifest.json

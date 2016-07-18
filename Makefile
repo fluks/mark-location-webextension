@@ -4,15 +4,13 @@ js := content_scripts/location.js
 .PHONY: firefox clean change_to_firefox change_to_chromium lint doc
 
 firefox: change_to_firefox
-	cp firefox/manifest.json .
 	zip -r mark_location_firefox.xpi $(dirs) manifest.json
-	rm manifest.json
 
 change_to_firefox:
-	sed -i 's/isFirefox = .*;/isFirefox = true;/' content_scripts/location.js
+	cp firefox/manifest.json .
 
 change_to_chromium:
-	sed -i 's/isFirefox = .*;/isFirefox = false;/' content_scripts/location.js
+	cp chromium/manifest.json .
 
 lint:
 	eslint --env es6 $(js)
@@ -21,4 +19,4 @@ doc:
 	jsdoc -c conf.json $(js)
 
 clean:
-	rm mark_location_firefox.xpi
+	rm mark_location_firefox.xpi manifest.json
