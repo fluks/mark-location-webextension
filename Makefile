@@ -1,7 +1,14 @@
 firefox_files := content_scripts icons/*.svg
-js := content_scripts/location.js
+js := \
+	content_scripts/*.js \
+	background/*.js \
+	browser_action/*.js \
+	settings/*.js
 
-.PHONY: firefox clean change_to_firefox change_to_chromium lint doc
+.PHONY: run firefox clean change_to_firefox change_to_chromium lint doc
+
+run:
+	/home/jukka/Downloads/firefox_dev/firefox --debug https://www.wikipedia.org
 
 firefox: change_to_firefox
 	zip -r mark_location_firefox.xpi $(firefox_files) manifest.json
@@ -16,7 +23,7 @@ lint:
 	eslint --env es6 $(js)
 
 doc:
-	jsdoc -c conf.json $(js)
+	jsdoc -c conf.json -d doc $(js)
 
 clean:
 	rm mark_location_firefox.xpi manifest.json
