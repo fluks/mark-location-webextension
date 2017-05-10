@@ -1,4 +1,17 @@
-input, label, button {
+input, label, button, select {
   margin: 5px;
   font-family: sans-serif;
+}
+
+#button-panel {
+  margin-top: 15px;
+}
+
+.accesskey {
+  text-decoration: underline;
+}
+
+#info-message {
+  margin: 15px 0 0 5px;
+  visibility: hidden;
 }

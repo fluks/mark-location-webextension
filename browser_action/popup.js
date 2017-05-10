@@ -37,6 +37,9 @@ const handleMarks = response => {
                 tooltip.classList.add('clickable');
                 tooltip.addEventListener('click', e => {
                     image.src = el.image;
+                    chrome.storage.local.get(null, res => {
+                        image.style.maxWidth = res.captured_tab_size;
+                    });
                     image.classList.remove('tooltip-image');
                     image.classList.add('visible');
                 });

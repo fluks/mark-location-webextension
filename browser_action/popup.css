@@ -10,13 +10,9 @@ span[id^='mark-']:hover, .clickable:hover {
   cursor: pointer;
 }
 
-.tooltip .tooltip-image {
-  background-color: black;
-  border-radius: 5px;
-  padding: 5px 0;
+.tooltip-image {
   visibility: hidden;
   position: absolute;
-  z-index: 1;
 }
 
 .tooltip-image:hover {
@@ -25,8 +21,6 @@ span[id^='mark-']:hover, .clickable:hover {
 
 .visible {
   visibility: visible;
-  width: 100%;
-  position: relative;
 }
 
 .table {

@@ -1,11 +1,11 @@
 'use strict';
 
-/** Set default options on install. onInstalled isn't triggered for
- * temporarily installed add-ons on Firefox and that's the
- * reason this function still exists.
+/** Set default options on install.
  */
 const setDefaultOptions = () => {
     chrome.storage.local.get(null, res => {
+        // Set one default option at a time if it doesn't exist already. This
+        // way it's easy to add new options.
         if (!res || !res.hasOwnProperty('mark_key')) {
             chrome.storage.local.set({
                 mark_key: {
@@ -15,7 +15,11 @@ const setDefaultOptions = () => {
                         key: ',',
                     },
                 },
-                scroll_key:  {
+            });
+        }
+        if (!res || !res.hasOwnProperty('scroll_key')) {
+            chrome.storage.local.set({
+                scroll_key: {
                     string: 'Control + .',
                     keys: {
                         ctrl: true,
@@ -24,32 +28,12 @@ const setDefaultOptions = () => {
                 },
             });
         }
+        if (!res || !res.hasOwnProperty('captured_tab_size')) {
+            chrome.storage.local.set({
+                captured_tab_size: '100%',
+            });
+        }
     });
-};
-
-/** Set dafault settings on installing the add-on.
- * @param {Object} details - onInstalled event can be triggered when the add-on
- * is installed, updated or the browser is updated.
- */
-const setDefaultSettings = (details) => {
-    if (details.reason === 'install') {
-        chrome.storage.local.set({
-            mark_key: {
-                string: 'Control + ,',
-                keys: {
-                    ctrl: true,
-                    key: ',',
-                },
-            },
-            scroll_key:  {
-                string: 'Control + .',
-                keys: {
-                    ctrl: true,
-                    key: '.',
-                },
-            },
-        });
-    }
 };
 
 /** Take a screenshot and send it to the sender.
@@ -67,11 +51,5 @@ const screenshotListener = (req, sender, sendResponse) => {
     return true;
 };
 
-/* This must be commented out, when creating a release version. onInstalled
- * isn't triggered for temporarily installed add-ons on Firefox and that's the
- * reason this function is still called here.
- */
 setDefaultOptions();
-// Uncomment this before a release.
-// chrome.runtime.onInstalled(setDefaultSettings);
 chrome.runtime.onMessage.addListener(screenshotListener);

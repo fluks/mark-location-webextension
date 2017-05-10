@@ -5,6 +5,8 @@ const
     cancel = document.querySelector('#cancel'),
     mark = document.querySelector('#mark_key'),
     scroll = document.querySelector('#scroll_key'),
+    tabSize = document.querySelector('#captured_tab_size'),
+    info = document.querySelector('#info-message'),
     MODIFIERS = new Set([ 'Alt', 'Ctrl', 'Shift' ]);
 
 let keys = {};
@@ -31,6 +33,9 @@ const restoreKey = (id) => {
 const restoreOptions = () => {
     restoreKey('mark');
     restoreKey('scroll');
+    chrome.storage.local.get(null, res => {
+        tabSize.value = res.captured_tab_size;
+    });
 };
 
 /** Save options.
@@ -48,7 +53,13 @@ const saveOptions = (e) => {
             string: scroll.value,
             keys: keys[scroll.id],
         },
+        captured_tab_size: tabSize.value,
     });
+
+    info.setAttribute('style', 'visibility: visible;');
+    window.setTimeout(() => {
+        info.setAttribute('style', 'visibility: hidden;');
+    }, 2000);
 };
 
 /** Don't save options, restore old ones.
