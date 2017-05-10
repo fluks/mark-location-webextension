@@ -1,9 +1,15 @@
-firefox_files := content_scripts icons/*.svg
 js := \
-	content_scripts/*.js \
+	content_scripts/location.js \
 	background/*.js \
 	browser_action/*.js \
 	settings/*.js
+firefox_files := \
+	manifest.json \
+	background/* \
+	browser_action/* \
+	content_scripts/location.js \
+	settings/* \
+	icons/*.svg
 
 .PHONY: run firefox clean change_to_firefox change_to_chromium lint doc
 
@@ -11,7 +17,7 @@ run:
 	/home/jukka/Downloads/firefox_dev/firefox --debug https://www.wikipedia.org
 
 firefox: change_to_firefox
-	zip -r mark_location_firefox.xpi $(firefox_files) manifest.json
+	zip mark_location_firefox.xpi $(firefox_files)
 
 change_to_firefox:
 	cp firefox/manifest.json .
