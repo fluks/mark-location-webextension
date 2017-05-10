@@ -1,0 +1,9 @@
+0.2
+
+  * Add browser action popup for an alternative way to mark and scroll and
+    to show an image of the tab on that location.
+  * Add settings page to set key shortcuts and captured tab image size.
+
+0.1 Mon Jul 18 03:33:46 2016 +0300 
+
+  * Initial release.
