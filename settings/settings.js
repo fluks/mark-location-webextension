@@ -6,8 +6,7 @@ const
     mark = document.querySelector('#mark_key'),
     scroll = document.querySelector('#scroll_key'),
     tabSize = document.querySelector('#captured_tab_size'),
-    info = document.querySelector('#info-message'),
-    MODIFIERS = new Set([ 'Alt', 'Ctrl', 'Shift' ]);
+    info = document.querySelector('#info-message');
 
 let keys = {};
 
