@@ -8,13 +8,13 @@ A WebExtension to mark a location on a web page and scroll to it.
 
 ## Usage
 
-- `Ctrl + , + 0-9` to mark a location.
-- `Ctrl + . + 0-9` to go to a saved location.
+Use the browser action popup to mark a location and scroll to a saved location.
+Press the number of a saved location to show a screenshot of the tab on that
+location.
+
+Or if you want to use keyboard shortcuts.
+
+- `<Mark keyboard shortcut> + 0-9` to mark a location.
+- `<Scroll keyboard shortcut> + 0-9` to go to a saved location.
 
 ![demo](demo.gif)
-
-## Todo
-
-- ~~Support for Chrome and Opera.~~
-- User configurable key shortcuts and time window.
-- Popup UI, on right mouse button click.
