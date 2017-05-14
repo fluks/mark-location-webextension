@@ -1,5 +1,9 @@
 'use strict';
 
+const CHROME = 0,
+    FIREFOX = 1,
+    TOOLTIP_TEXT = 'Click to show captured tab';
+
 /** Create a node for a scroll-to button.
  * @param {Int} i - i'th mark.
  * @return {Element}
@@ -11,6 +15,59 @@ const createScrollNode = i => {
     scroll.className = 'clickable';
 
     return scroll;
+};
+
+/**
+ * Detect which browser this addon is installed to.
+ * @return FIREFOX if the addon is installed to Firefox, CHROME otherwise.
+ */
+const detectBrowser = () => {
+    try {
+        browser.runtime.getBrowserInfo();
+        return FIREFOX;
+    }
+    catch (error) {
+        return CHROME;
+    }
+};
+
+/**
+ * Hide captured tab image and update tooltip texts.
+ * @param {Object} e - Click event.
+ * @param {Element} image - Image HTML element.
+ * @param {Element} tooltip - Image's parent HTML element.
+ */
+const hideImage = (e, image, tooltip) => {
+    image.src = '';
+    image.classList.add('tooltip-image');
+    image.classList.remove('visible');
+    tooltip.title = TOOLTIP_TEXT;
+    e.stopPropagation();
+    // If the image is so large that the popup can be scrolled
+    // and the popup is scrolled, say, down. When the image is
+    // closed, the topmost table cells might not be visible.
+    // Scrolling to the top of the popup fixes this.
+    window.scrollTo(0, 0);
+};
+
+/**
+ * Show captured tab image and update tooltip texts.
+ * @param {Object} e - Click event.
+ * @param {Element} image - Image HTML element.
+ * @param {Object el - Mark object.
+ * @param {Element} tooltip - Image's parent HTML element.
+ */
+const showImage = (e, image, el, tooltip) => {
+    tooltip.title = '';
+    image.src = el.image;
+    chrome.storage.local.get(null, res => {
+        if (detectBrowser() === CHROME)
+            image.style.height = res.captured_tab_size;
+        else
+            image.style.maxWidth = res.captured_tab_size;
+    });
+    image.classList.remove('tooltip-image');
+    image.classList.add('visible');
 };
 
 /** Show scroll texts.
@@ -26,24 +83,16 @@ const handleMarks = response => {
 
                 const image = document.querySelector('#image-' + i);
                 image.addEventListener('click', e => {
-                    image.src = '';
-                    image.classList.add('tooltip-image');
-                    image.classList.remove('visible');
-                    e.stopPropagation();
-                });
+                     hideImage(e, image, tooltip);
+                 });
                 image.title = 'Click to hide';
 
                 const tooltip = row.children[0];
                 tooltip.classList.add('clickable');
                 tooltip.addEventListener('click', e => {
-                    image.src = el.image;
-                    chrome.storage.local.get(null, res => {
-                        image.style.maxWidth = res.captured_tab_size;
-                    });
-                    image.classList.remove('tooltip-image');
-                    image.classList.add('visible');
+                    showImage(e, image, el, tooltip);
                 });
-                tooltip.title = 'Click to show captured tab';
+                tooltip.title = TOOLTIP_TEXT;
             }
         });
 };
