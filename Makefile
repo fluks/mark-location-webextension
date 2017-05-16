@@ -4,6 +4,8 @@ js := \
 	browser_action/*.js \
 	settings/*.js
 common_files := \
+	_locales/* \
+	l10n/* \
 	manifest.json \
 	background/* \
 	browser_action/* \
@@ -22,7 +24,7 @@ run:
 	/home/jukka/Downloads/firefox_dev/firefox --debug https://www.wikipedia.org
 
 firefox: change_to_firefox
-	zip mark_location_firefox.xpi $(firefox_files)
+	zip -r mark_location_firefox.xpi $(firefox_files)
 
 chromium: change_to_chromium
 	zip mark_location_chromium.zip $(chromium_files)
