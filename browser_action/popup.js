@@ -2,7 +2,8 @@
 
 const CHROME = 0,
     FIREFOX = 1,
-    TOOLTIP_TEXT = 'Click to show captured tab';
+    // Can't use only _, because l10n library declares that already.
+    _M = chrome.i18n.getMessage;
 
 /** Create a node for a scroll-to button.
  * @param {Int} i - i'th mark.
@@ -11,7 +12,7 @@ const CHROME = 0,
 const createScrollNode = i => {
     const scroll = document.createElement('span');
     scroll.setAttribute('id', 'scroll-' + i);
-    scroll.textContent = 'Scroll';
+    scroll.textContent = _M('scrollCellText');
     scroll.className = 'clickable';
 
     return scroll;
@@ -41,7 +42,7 @@ const hideImage = (e, image, tooltip) => {
     image.src = '';
     image.classList.add('tooltip-image');
     image.classList.remove('visible');
-    tooltip.title = TOOLTIP_TEXT;
+    tooltip.title = _M('tooltipTitle');
     e.stopPropagation();
     // If the image is so large that the popup can be scrolled
     // and the popup is scrolled, say, down. When the image is
@@ -85,14 +86,14 @@ const handleMarks = response => {
                 image.addEventListener('click', e => {
                      hideImage(e, image, tooltip);
                  });
-                image.title = 'Click to hide';
+                image.title = _M('imageTitle');
 
                 const tooltip = row.children[0];
                 tooltip.classList.add('clickable');
                 tooltip.addEventListener('click', e => {
                     showImage(e, image, el, tooltip);
                 });
-                tooltip.title = TOOLTIP_TEXT;
+                tooltip.title = _M('tooltipTitle');
             }
         });
 };

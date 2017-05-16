@@ -1,0 +1,18 @@
+{
+    "extensionDescription": {
+        "message": "Merkitse kohta sivulla muistiin ja mene siihen myöhemmin.",
+        "description": "Description of the extension."
+    },
+    "tooltipTitle": {
+        "message": "Näytä kuvakaappaus",
+        "description": "Tooltip text to show when the captured tab image is hidden."
+    },
+    "scrollCellText": {
+        "message": "Mene",
+        "description": "Text shown in the popup's scroll to cell."
+    },
+    "imageTitle": {
+        "message": "Piilota kuvakaappaus",
+        "description": "Tooltip text to show when captured tab image is shown."
+    }
+}

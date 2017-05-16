@@ -4,15 +4,17 @@
     <meta charset="UTF-8"/>
     <title>Mark Location Settings</title>
     <link rel="stylesheet" type="text/css" href="settings.css"/>
+    <script type="text/javascript" src="../l10n/l10n.js"></script>
+    <link rel="prefetch" type="application/l10n" href="../l10n/settings.ini"/>
   </head>
   <body>
     <form>
-      <label for="mark_key"><span class="accesskey">M</span>ark Key</label><br>
-      <input type="text" id="mark_key" title="Must contain at least control and some other key (letter etc.)" accesskey="M"><br>
-      <label for="scroll_key">Sc<span class="accesskey">r</span>oll Key</label><br>
-      <input type="text" id="scroll_key" title="Must contain at least control and some other key (letter etc.)" accesskey="r"><br>
-      <label for="captured_tab_size"><span class="accesskey">C</span>aptured Tab Image Size</label><br>
-      <select id="captured_tab_size" accesskey="C">
+      <label for="mark_key" data-l10n-id="markLabel"><span class="accesskey">M</span>ark Key</label><br>
+      <input type="text" id="mark_key" title="Must contain at least control and some other key (letter etc.)" accesskey="M" data-l10n-id="markInput"><br>
+      <label for="scroll_key" data-l10n-id="scrollLabel">Sc<span class="accesskey">r</span>oll Key</label><br>
+      <input type="text" id="scroll_key" title="Must contain at least control and some other key (letter etc.)" accesskey="r" data-l10n-id="scrollInput"><br>
+      <label for="captured_tab_size" data-l10n-id="tabSizeLabel">C<span class="accesskey">a</span>ptured Tab Image Size</label><br>
+      <select id="captured_tab_size" accesskey="a" data-l10n-id="tabSizeSelect">
         <option value="30%">30%</option>
         <option value="40%">40%</option>
         <option value="50%">50%</option>
@@ -23,10 +25,10 @@
         <option value="100%">100%</option>
       </select>
       <div id="button-panel">
-        <button type="button" id="cancel" accesskey="C"><span class="accesskey">C</span>ancel</button>
-        <button type="button" id="save" accesskey="S"><span class="accesskey">S</span>ave</button>
+        <button type="button" id="cancel" accesskey="C" data-l10n-id="cancelButton"><span class="accesskey">C</span>ancel</button>
+        <button type="button" id="save" accesskey="S" data-l10n-id="saveButton"><span class="accesskey">S</span>ave</button>
       </div>
-      <div><span id="info-message">Settings saved</span></div>
+      <div><span id="info-message" data-l10n-id="infoMessage">Settings saved</span></div>
     </form>
     <script src="settings.js"></script>
   </body>

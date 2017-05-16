@@ -1,0 +1,18 @@
+{
+    "extensionDescription": {
+        "message": "Mark a location on a page and scroll to it.",
+        "description": "Description of the extension."
+    },
+    "tooltipTitle": {
+        "message": "Show captured tab",
+        "description": "Tooltip text to show when the captured tab image is hidden."
+    },
+    "scrollCellText": {
+        "message": "Scroll",
+        "description": "Text shown in the popup's scroll to cell."
+    },
+    "imageTitle": {
+        "message": "Hide captured tab",
+        "description": "Tooltip text to show when captured tab image is shown."
+    }
+}
