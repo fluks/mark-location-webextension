@@ -3,8 +3,9 @@ js := \
 	background/*.js \
 	browser_action/*.js \
 	settings/*.js
+locale_files := $(shell find _locales -type f)
 common_files := \
-	_locales/* \
+	$(locale_files) \
 	l10n/* \
 	manifest.json \
 	background/* \
