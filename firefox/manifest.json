@@ -7,8 +7,8 @@
     "default_locale": "en",
 
     "icons": {
-        "48": "icons/mark_location.svg",
-        "96": "icons/mark_location.svg"
+        "48": "firefox/mark_location.svg",
+        "96": "firefox/mark_location.svg"
     },
 
     "applications": {
@@ -30,7 +30,7 @@
 
     "browser_action": {
         "browser_style": true,
-        "default_icon": "icons/mark_location.svg",
+        "default_icon": "firefox/mark_location.svg",
         "default_title": "Mark Location",
         "default_popup": "browser_action/popup.html"
     },

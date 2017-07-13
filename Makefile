@@ -14,10 +14,10 @@ common_files := \
 	settings/*
 firefox_files := \
 	$(common_files) \
-	icons/*.svg
+	firefox/*.svg
 chromium_files := \
 	$(common_files) \
-	icons/*.png
+	chromium/mark_location*.png
 
 .PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint doc
 

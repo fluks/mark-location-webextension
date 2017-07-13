@@ -7,10 +7,9 @@
     "default_locale": "en",
 
     "icons": {
-        "16": "icons/mark_location_16.png",
-        "32": "icons/mark_location_32.png",
-        "48": "icons/mark_location_48.png",
-        "128": "icons/mark_location_128.png"
+        "16": "chromium/mark_location_16.png",
+        "48": "chromium/mark_location_48.png",
+        "128": "chromium/mark_location_128.png"
     },
 
     "options_ui": {
@@ -26,7 +25,7 @@
 
     "browser_action": {
         "browser_style": true,
-        "default_icon": "icons/mark_location_128.png",
+        "default_icon": "chromium/mark_location_128.png",
         "default_title": "Mark Location",
         "default_popup": "browser_action/popup.html"
     },
