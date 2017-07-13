@@ -25,9 +25,15 @@ run:
 	/home/jukka/Downloads/firefox_dev/firefox --debug https://www.wikipedia.org
 
 firefox: change_to_firefox
+	# Default screenshot size 100%.
+	sed -i 's/captured_tab_size:\([^0-9]*\)\([0-9]*\)%/captured_tab_size:\1100%/' \
+		background/background.js
 	zip -r mark_location_firefox.xpi $(firefox_files)
 
 chromium: change_to_chromium
+	# Default screenshot size 30%.
+	sed -i 's/captured_tab_size:\([^0-9]*\)\([0-9]*\)%/captured_tab_size:\130%/' \
+		background/background.js
 	zip mark_location_chromium.zip $(chromium_files)
 
 change_to_firefox:
