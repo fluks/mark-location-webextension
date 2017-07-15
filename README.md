@@ -5,6 +5,7 @@ A WebExtension to mark a location on a web page and scroll to it.
 ## Install
 
 <https://addons.mozilla.org/en-US/firefox/addon/mark-location/>
+<https://chrome.google.com/webstore/detail/mark-location/kafbgiaafedpibbjcffhfigopjdhmabg>
 
 ## Usage
 
