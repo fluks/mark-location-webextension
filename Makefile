@@ -2,7 +2,8 @@ js := \
 	content_scripts/location.js \
 	background/*.js \
 	browser_action/*.js \
-	settings/*.js
+	settings/*.js \
+	common/*.js
 locale_files := $(shell find _locales -type f)
 common_files := \
 	$(locale_files) \

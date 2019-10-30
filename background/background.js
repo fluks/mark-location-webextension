@@ -1,3 +1,4 @@
+/** @module background */
 'use strict';
 
 /** Set default options on install.

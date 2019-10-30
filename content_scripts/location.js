@@ -1,3 +1,4 @@
+/** @module location */
 'use strict';
 
 const
@@ -40,7 +41,7 @@ const keysMatch = (pressedKey, setKey) => {
  * Mark a location or go to a location on a page.
  * @param {Object} e - Object returned by the {@link crossBrowserKey} function.
  */
-const keydownHandler = function(e) {
+const keydownHandler = (e) => {
     chrome.storage.local.get(null, res => {
         if (keysMatch(e, res.mark_key.keys)) {
             window.clearTimeout(markTimeout);
@@ -102,8 +103,12 @@ const popupListener = (req, sender, sendResponse) => {
     else if (req.mark) {
         const i = req.mark;
         marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
-        chrome.runtime.sendMessage({ screenshot: true }, res => {
-            marks[i].image = res.image;
+        common.detectBrowser().then(browser => {
+            if (browser !== common.FIREFOX_ANDROID) {
+                chrome.runtime.sendMessage({ screenshot: true }, res => {
+                    marks[i].image = res.image;
+                });
+            }
         });
     }
     else if (req.scroll) {

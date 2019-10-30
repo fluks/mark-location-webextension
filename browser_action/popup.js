@@ -1,11 +1,11 @@
+/** @module popup */
 'use strict';
 
-const CHROME = 0,
-    FIREFOX = 1,
-    // Can't use only _, because l10n library declares that already.
-    _M = chrome.i18n.getMessage;
+// Can't use only _, because l10n library declares that already.
+const _M = chrome.i18n.getMessage;
 
 /** Create a node for a scroll-to button.
+ * @function createScrollNode
  * @param {Int} i - i'th mark.
  * @return {Element}
  */
@@ -19,21 +19,8 @@ const createScrollNode = i => {
 };
 
 /**
- * Detect which browser this addon is installed to.
- * @return FIREFOX if the addon is installed to Firefox, CHROME otherwise.
- */
-const detectBrowser = () => {
-    try {
-        browser.runtime.getBrowserInfo();
-        return FIREFOX;
-    }
-    catch (error) {
-        return CHROME;
-    }
-};
-
-/**
  * Hide captured tab image and update tooltip texts.
+ * @function hideImage
  * @param {Object} e - Click event.
  * @param {Element} image - Image HTML element.
  * @param {Element} tooltip - Image's parent HTML element.
@@ -53,6 +40,7 @@ const hideImage = (e, image, tooltip) => {
 
 /**
  * Show captured tab image and update tooltip texts.
+ * @function showImage
  * @param {Object} e - Click event.
  * @param {Element} image - Image HTML element.
  * @param {Object el - Mark object.
@@ -61,8 +49,8 @@ const hideImage = (e, image, tooltip) => {
 const showImage = (e, image, el, tooltip) => {
     tooltip.title = '';
     image.src = el.image;
-    chrome.storage.local.get(null, res => {
-        if (detectBrowser() === CHROME)
+    chrome.storage.local.get(null, async (res) => {
+        if (await common.detectBrowser() === common.CHROME)
             image.style.height = res.captured_tab_size;
         else
             image.style.maxWidth = res.captured_tab_size;
@@ -72,9 +60,11 @@ const showImage = (e, image, el, tooltip) => {
 };
 
 /** Show scroll texts.
+ * @function handleMarks
  * @param {Object} response
  */
-const handleMarks = response => {
+const handleMarks = async (response) => {
+    const isFirefoxAndroid = await common.detectBrowser() === common.FIREFOX_ANDROID;
     response.marks
         .forEach((el, i) => {
             if (el) {
@@ -82,23 +72,26 @@ const handleMarks = response => {
                 const row = document.querySelector('#mark-' + i).parentNode;
                 row.appendChild(scroll);
 
-                const image = document.querySelector('#image-' + i);
-                image.addEventListener('click', e => {
-                     hideImage(e, image, tooltip);
-                 });
-                image.title = _M('imageTitle');
+                if (!isFirefoxAndroid) {
+                    const image = document.querySelector('#image-' + i);
+                    image.addEventListener('click', e => {
+                         hideImage(e, image, tooltip);
+                     });
+                    image.title = _M('imageTitle');
 
-                const tooltip = row.children[0];
-                tooltip.classList.add('clickable');
-                tooltip.addEventListener('click', e => {
-                    showImage(e, image, el, tooltip);
-                });
-                tooltip.title = _M('tooltipTitle');
+                    const tooltip = row.children[0];
+                    tooltip.classList.add('clickable');
+                    tooltip.addEventListener('click', e => {
+                        showImage(e, image, el, tooltip);
+                    });
+                    tooltip.title = _M('tooltipTitle');
+                }
             }
         });
 };
 
 /** Get marks and show a possibility to scroll to them.
+ * @function updateUI
  * @param {EventTarget} e
  */
 const updateUI = e => {
@@ -107,7 +100,23 @@ const updateUI = e => {
     });
 };
 
+/**
+ * Close the browser action popup.
+ * @function close
+ * @async
+ */
+const close = async () => {
+    if (await common.detectBrowser() === common.FIREFOX_ANDROID) {
+        chrome.tabs.getCurrent((tab) => {
+            chrome.tabs.remove(tab.id);
+        });
+    }
+    else
+        window.close();
+};
+
 /** Handle clicks on a popup to mark a location or scroll to a location.
+ * @function clickHandler
  * @param {EventTarget} e
  */
 const clickHandler = e => {
@@ -115,19 +124,15 @@ const clickHandler = e => {
         const id = e.target.id;
         const index = id.charAt(id.length - 1);
 
-        if (id.includes('mark')) {
-            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                chrome.tabs.sendMessage(tabs[0].id, { mark: index });
-                // Have to be inside the function.
-                window.close();
-            });
-        }
-        else if (id.includes('scroll')) {
-            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                chrome.tabs.sendMessage(tabs[0].id, { scroll: index });
-                window.close();
-            });
-        }
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            const options = {};
+            if (id.includes('mark'))
+                options.mark = index;
+            else if (id.includes('scroll'))
+                options.scroll = index;
+            chrome.tabs.sendMessage(tabs[0].id, options);
+            close();
+        });
     }
 };
 

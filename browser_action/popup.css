@@ -1,3 +1,7 @@
+body {
+  margin: 5px;
+}
+
 span {
   padding: 5px;
   display: table-cell;
@@ -25,7 +29,10 @@ span[id^='mark-']:hover, .clickable:hover {
 
 .table {
   display: table;
-  margin: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: 100%;
 }
 
 .row {
