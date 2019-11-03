@@ -13,7 +13,8 @@ common_files := \
 	browser_action/* \
 	content_scripts/location.js \
 	settings/* \
-	common/*
+	common/* \
+	LICENSE
 firefox_files := \
 	$(common_files) \
 	firefox/*.svg
