@@ -12,7 +12,8 @@ common_files := \
 	background/* \
 	browser_action/* \
 	content_scripts/location.js \
-	settings/*
+	settings/* \
+	common/*
 firefox_files := \
 	$(common_files) \
 	firefox/*.svg
