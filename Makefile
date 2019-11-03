@@ -20,12 +20,26 @@ firefox_files := \
 chromium_files := \
 	$(common_files) \
 	chromium/mark_location*.png
+# Change this to point to a Firefox binary or remove the line from run target
+# to use the default Firefox in your path.
+firefox-bin := ~/Downloads/firefox_dev/firefox
 
-.PHONY: run firefox chromium clean change_to_firefox change_to_chromium lint doc \
-	compare_install_and_source
+.PHONY: run firefox chromium clean change_to_firefox \
+	change_to_chromium lint doc compare_install_and_source supported_versions \
+	install_dependencies
 
+# Run on FoA:
+# web-ext run \
+# 	--target=firefox-android \
+# 	--android-device=$(firefox_android_apk) \
+# 	--firefox-apk=$(android_device_id)
 run:
-	/home/jukka/Downloads/firefox_dev/firefox --debug https://www.wikipedia.org
+	web-ext run \
+		--firefox-binary $(firefox-bin) \
+		--pref intl.locale.requested=en \
+		-u https://en.wikipedia.org/wiki/Main_Page \
+		-u about:debugging \
+		-u about:addons
 
 firefox: change_to_firefox
 	# Default screenshot size 100%.
@@ -45,8 +59,15 @@ change_to_firefox:
 change_to_chromium:
 	cp chromium/manifest.json .
 
-lint:
-	eslint --env es6 $(js)
+install_dependencies:
+	npm install
+
+# web-ext lint finds errors if manifest.json isn't the Firefox version.
+lint: change_to_firefox
+	# Check JSON syntax.
+	$(foreach file,$(locale_files),python -m json.tool < $(file) 1>/dev/null || exit;)
+	-web-ext lint --ignore-files doc/*
+	eslint $(js)
 
 doc:
 	jsdoc -c conf.json -d doc $(js)
