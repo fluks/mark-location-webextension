@@ -3,3 +3,5 @@ ff_addons_page/
 *.xpi
 manifest.json
 doc/
+*.zip
+node_modules/
