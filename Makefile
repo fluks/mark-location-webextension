@@ -25,6 +25,8 @@ chromium_files := \
 # to use the default Firefox in your path.
 firefox-bin := ~/Downloads/firefox_dev/firefox
 
+version_suffix := $(shell grep -o '[0-9]\.[0-9]' manifest.json | head -1 | sed 's/\./_/g')
+
 .PHONY: run firefox chromium clean change_to_firefox \
 	change_to_chromium lint doc compare_install_and_source supported_versions \
 	install_dependencies
@@ -46,13 +48,13 @@ firefox: change_to_firefox
 	# Default screenshot size 100%.
 	sed -i 's/captured_tab_size:\([^0-9]*\)\([0-9]*\)%/captured_tab_size:\1100%/' \
 		background/background.js
-	zip -r mark_location_firefox.xpi $(firefox_files)
+	zip -r mark_location_firefox-$(version_suffix).xpi $(firefox_files)
 
 chromium: change_to_chromium
 	# Default screenshot size 30%.
 	sed -i 's/captured_tab_size:\([^0-9]*\)\([0-9]*\)%/captured_tab_size:\130%/' \
 		background/background.js
-	zip mark_location_chromium.zip $(chromium_files)
+	zip mark_location_chromium-$(version_suffix).zip $(chromium_files)
 
 change_to_firefox:
 	cp firefox/manifest.json .
