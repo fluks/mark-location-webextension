@@ -24,6 +24,7 @@ chromium_files := \
 # Change this to point to a Firefox binary or remove the line from run target
 # to use the default Firefox in your path.
 firefox-bin := ~/Downloads/firefox_dev/firefox
+firefox-profile := dev-edition-default
 
 version_suffix := $(shell grep -o '[0-9]\.[0-9]' manifest.json | head -1 | sed 's/\./_/g')
 
@@ -39,6 +40,7 @@ version_suffix := $(shell grep -o '[0-9]\.[0-9]' manifest.json | head -1 | sed '
 run:
 	web-ext run \
 		--firefox-binary $(firefox-bin) \
+		--firefox-profile $(firefox-profile)
 		--pref intl.locale.requested=en \
 		-u https://en.wikipedia.org/wiki/Main_Page \
 		-u about:debugging \
