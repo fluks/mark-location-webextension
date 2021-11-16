@@ -20,6 +20,7 @@
         {
             "matches": [ "*://*/*" ],
             "js": [
+                "common/browser-polyfill.js",
                 "common/common.js",
                 "content_scripts/location.js"
              ]
@@ -34,7 +35,11 @@
     },
 
     "background": {
-        "scripts": [ "background/background.js" ]
+        "scripts": [
+            "common/browser-polyfill.js",
+            "common/common.js",
+            "background/background.js"
+        ]
     },
 
     "permissions": [

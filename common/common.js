@@ -27,4 +27,14 @@ const common = {
             return this.CHROME;
         }
     },
+
+    /**
+     * Gets number of marks used on a page.
+     * @function marksInUse
+     * @param marks {Array}
+     * @return {Integer} Number of marks on the current page.
+     */
+    marksInUse(marks) {
+        return marks.filter(m => m).length;
+    }
 };

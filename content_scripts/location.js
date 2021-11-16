@@ -71,7 +71,8 @@ const keydownHandler = (e) => {
                 markPressed = false;
 
                 marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
-                chrome.runtime.sendMessage({ screenshot: true }, res => {
+                chrome.runtime.sendMessage(
+                    { screenshot: true, marks: marks, }, res => {
                     marks[i].image = res.image;
                 });
             }
@@ -103,13 +104,9 @@ const popupListener = (req, sender, sendResponse) => {
     else if (req.mark) {
         const i = req.mark;
         marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
-        common.detectBrowser().then(browser => {
-            if (browser !== common.FIREFOX_ANDROID) {
-                chrome.runtime.sendMessage({ screenshot: true }, res => {
-                    marks[i].image = res.image;
-                });
-            }
-        });
+        chrome.runtime.sendMessage({ screenshot: true, marks: marks, },
+            (res) => { marks[i].image = res.image; },
+        );
     }
     else if (req.scroll) {
         const i = req.scroll;

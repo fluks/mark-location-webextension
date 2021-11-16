@@ -65,6 +65,7 @@ const showImage = (e, image, el, tooltip) => {
  */
 const handleMarks = async (response) => {
     const isFirefoxAndroid = await common.detectBrowser() === common.FIREFOX_ANDROID;
+
     response.marks
         .forEach((el, i) => {
             if (el) {
