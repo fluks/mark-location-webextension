@@ -1,3 +1,7 @@
+0.4 Wed, 17 Nov 2021 22:28:42 +0200
+
+  * Add number of marks to the browser action badge.
+
 0.3 Sun, 03 Nov 2019 19:41:05 +0200
 
   * Add Firefox for Android support.
