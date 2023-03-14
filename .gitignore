@@ -5,3 +5,5 @@ manifest.json
 doc/
 *.zip
 node_modules/
+package-lock.json
+TODO

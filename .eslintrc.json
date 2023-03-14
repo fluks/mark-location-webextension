@@ -1,6 +1,7 @@
 {
     "env": {
         "browser": true,
+        "webextensions": true,
         "es6": true
     },
     "extends": "eslint:recommended",
@@ -21,5 +22,13 @@
             "error",
             "always"
         ]
+    },
+    "ignorePatterns": [ "doc/*", "common/browser-polyfill.js", "l10n/l10n.js", "common/idb.js" ],
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "globals": {
+        "common": "readonly",
+        "idb": "readonly"
     }
 }

@@ -40,8 +40,8 @@ version_suffix := $(shell grep -o '[0-9]\.[0-9]' manifest.json | head -1 | sed '
 run:
 	web-ext run \
 		--firefox-binary $(firefox-bin) \
-		--firefox-profile $(firefox-profile)
-		--pref intl.locale.requested=en \
+		--firefox-profile $(firefox-profile) \
+		--pref=intl.locale.requested=en \
 		-u https://en.wikipedia.org/wiki/Main_Page \
 		-u about:debugging \
 		-u about:addons
@@ -71,7 +71,7 @@ install_dependencies:
 lint: change_to_firefox
 	# Check JSON syntax.
 	$(foreach file,$(locale_files),python -m json.tool < $(file) 1>/dev/null || exit;)
-	-web-ext lint --ignore-files doc/*
+	-web-ext lint --ignore-files=doc/* common/browser-polyfill.js l10n/l10n.js common/idb.js
 	eslint $(js)
 
 doc:
