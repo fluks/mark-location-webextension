@@ -4,9 +4,10 @@ const
     save = document.querySelector('#save'),
     cancel = document.querySelector('#cancel'),
     mark = document.querySelector('#mark_key'),
-    scroll = document.querySelector('#scroll_key'),
+    _scroll = document.querySelector('#scroll_key'),
     tabSize = document.querySelector('#captured_tab_size'),
-    info = document.querySelector('#info-message');
+    info = document.querySelector('#info-message'),
+    permanentMarks = document.querySelector('#permanent-marks');
 
 let keys = {};
 
@@ -21,8 +22,8 @@ const restoreKey = (id) => {
             keys[mark.id] = res.mark_key.keys;
         }
         else if (id.includes('scroll')) {
-            scroll.value = res.scroll_key.string;
-            keys[scroll.id] = res.scroll_key.keys;
+            _scroll.value = res.scroll_key.string;
+            keys[_scroll.id] = res.scroll_key.keys;
         }
     });
 };
@@ -30,10 +31,13 @@ const restoreKey = (id) => {
 /** Restore options for viewing.
  */
 const restoreOptions = () => {
-    restoreKey('mark');
-    restoreKey('scroll');
     chrome.storage.local.get(null, res => {
+        mark.value = res.mark_key.string;
+        keys[mark.id] = res.mark_key.keys;
+        _scroll.value = res.scroll_key.string;
+        keys[_scroll.id] = res.scroll_key.keys;
         tabSize.value = res.captured_tab_size;
+        permanentMarks.checked = res.permanent_marks;
     });
 };
 
@@ -49,10 +53,11 @@ const saveOptions = (e) => {
             keys: keys[mark.id],
         },
         scroll_key: {
-            string: scroll.value,
-            keys: keys[scroll.id],
+            string: _scroll.value,
+            keys: keys[_scroll.id],
         },
         captured_tab_size: tabSize.value,
+        permanent_marks: permanentMarks.checked,
     });
 
     info.setAttribute('style', 'visibility: visible;');
@@ -112,7 +117,7 @@ const getKeyShortcut = (e) => {
         e.key.length === 1 && e.key,
     ].filter(k => k).join(' + ');
 
-    save.disabled = !areKeysValid(keys[id]) || mark.value === scroll.value;
+    save.disabled = !areKeysValid(keys[id]) || mark.value === _scroll.value;
 };
 
 /**
@@ -121,7 +126,7 @@ const getKeyShortcut = (e) => {
  */
 const validate = (e) => {
     const id = e.target.id;
-    if (!areKeysValid(keys[id]) || mark.value === scroll.value ||
+    if (!areKeysValid(keys[id]) || mark.value === _scroll.value ||
             !e.target.value) {
         restoreKey(id);
         save.disabled = false;
@@ -131,7 +136,7 @@ const validate = (e) => {
 document.addEventListener('DOMContentLoaded', restoreOptions);
 save.addEventListener('click', saveOptions);
 cancel.addEventListener('click', cancelOptions);
-[ mark, scroll ].forEach(e => {
+[ mark, _scroll ].forEach(e => {
     e.addEventListener('keydown', getKeyShortcut);
     e.addEventListener('focus', emptyValue);
     e.addEventListener('blur', validate);

@@ -4,5 +4,7 @@
     "eslint": "latest",
     "jsdoc": "latest"
   },
-  "dependencies": {}
+  "dependencies": {
+    "idb-keyval": "^6.2.0"
+  }
 }

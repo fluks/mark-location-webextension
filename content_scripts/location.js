@@ -4,13 +4,13 @@
 const
     // Time window in ms after pressing a mark or goto key to register
     // a number key press.
-    TIME_DELTA_INDEX = 1000,
-    marks = [];
+    TIME_DELTA_INDEX = 1000;
 let
     markPressed = false,
     gotoPressed = false,
     markTimeout,
-    gotoTimeout;
+    gotoTimeout,
+    marks = [];
 
 /**
  * Convert undefined value to false.
@@ -73,8 +73,9 @@ const keydownHandler = (e) => {
                 marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
                 chrome.runtime.sendMessage(
                     { screenshot: true, marks: marks, }, res => {
-                    marks[i].image = res.image;
-                });
+                        marks[i].image = res.image;
+                    }
+                );
             }
             else if (gotoPressed) {
                 window.clearTimeout(gotoTimeout);
@@ -104,13 +105,20 @@ const popupListener = (req, sender, sendResponse) => {
     else if (req.mark) {
         const i = req.mark;
         marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
-        chrome.runtime.sendMessage({ screenshot: true, marks: marks, },
+        chrome.runtime.sendMessage({ screenshot: true, marks: marks, url: window.location.href, },
             (res) => { marks[i].image = res.image; },
         );
     }
     else if (req.scroll) {
         const i = req.scroll;
         window.scrollTo(marks[i].x, marks[i].y);
+    }
+    else if (req.clear_marks) {
+        marks = [];
+        chrome.runtime.sendMessage({ clear_marks: true, url: window.location.href, });
+    }
+    else if (req.marks) {
+        marks = req.marks;
     }
 
     return true;

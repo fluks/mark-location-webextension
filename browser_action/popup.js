@@ -48,7 +48,15 @@ const hideImage = (e, image, tooltip) => {
  */
 const showImage = (e, image, el, tooltip) => {
     tooltip.title = '';
-    image.src = el.image;
+    if (el.image)
+        image.src = el.image;
+    else {
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            idb.get(tabs[0].url).then(val => {
+                image.src = val;
+            });
+        });
+    }
     chrome.storage.local.get(null, async (res) => {
         if (await common.detectBrowser() === common.CHROME)
             image.style.height = res.captured_tab_size;
@@ -62,6 +70,7 @@ const showImage = (e, image, el, tooltip) => {
 /** Show scroll texts.
  * @function handleMarks
  * @param {Object} response
+ * @async
  */
 const handleMarks = async (response) => {
     const isFirefoxAndroid = await common.detectBrowser() === common.FIREFOX_ANDROID;
@@ -76,8 +85,8 @@ const handleMarks = async (response) => {
                 if (!isFirefoxAndroid) {
                     const image = document.querySelector('#image-' + i);
                     image.addEventListener('click', e => {
-                         hideImage(e, image, tooltip);
-                     });
+                        hideImage(e, image, tooltip);
+                    });
                     image.title = _M('imageTitle');
 
                     const tooltip = row.children[0];
@@ -93,9 +102,8 @@ const handleMarks = async (response) => {
 
 /** Get marks and show a possibility to scroll to them.
  * @function updateUI
- * @param {EventTarget} e
  */
-const updateUI = e => {
+const updateUI = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         chrome.tabs.sendMessage(tabs[0].id, { getMarks: true }, handleMarks);
     });
@@ -103,10 +111,10 @@ const updateUI = e => {
 
 /**
  * Close the browser action popup.
- * @function close
+ * @function _close
  * @async
  */
-const close = async () => {
+const _close = async () => {
     if (await common.detectBrowser() === common.FIREFOX_ANDROID) {
         chrome.tabs.getCurrent((tab) => {
             chrome.tabs.remove(tab.id);
@@ -127,12 +135,16 @@ const clickHandler = e => {
 
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             const options = {};
-            if (id.includes('mark'))
+            if (id === 'clear-marks') {
+                options.clear_marks = true;
+                idb.del(tabs[0].url);
+            }
+            else if (id.includes('mark'))
                 options.mark = index;
             else if (id.includes('scroll'))
                 options.scroll = index;
             chrome.tabs.sendMessage(tabs[0].id, options);
-            close();
+            _close();
         });
     }
 };
