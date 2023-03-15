@@ -49,7 +49,7 @@ const setBrowserActionBadgeOrTitle = (n, tabId) => {
     common.detectBrowser().then(b => {
         if (b !== common.FIREFOX_ANDROID) {
             chrome.browserAction.setBadgeText({
-                text: n + '',
+                text: String(n),
                 tabId: tabId,
             });
         }
@@ -68,26 +68,27 @@ const setBrowserActionBadgeOrTitle = (n, tabId) => {
     });
 };
 
-/** Either take a screenshot, set browser badge or title and send screenshot to
- * the tab, or clear marks for the tab.
- * @function takeScreenshotAndUpdateBadgeOrClearMarks
+/** Save permanent marks and take a screenshot, or clear permanent marks, or
+ * return permanent marks the first time page is loaded.
+ * @function messageListener
  * @param {Object} req
  * @param {MessageSender} sender
  * @param {Function} sendResponse
  * @return Return always true to send the response asynchronously, otherwise
  * the sender never gets the response.
  */
-const takeScreenshotAndUpdateBadgeOrClearMarks = (req, sender, sendResponse) => {
+const messageListener = (req, sender, sendResponse) => {
     if (req.marks) {
         const marks = req.marks;
         if (marks != null && marks.constructor === Array) {
-            const n = String(common.marksInUse(marks));
+            const n = common.marksInUse(marks);
             setBrowserActionBadgeOrTitle(n, sender.tab.id);
 
             chrome.storage.local.get(null, (res) => {
-                // TODO Do this only when permanent_marks is true?
-                res.urls[req.url] = marks;
-                chrome.storage.local.set(res);
+                if (res.permanent_marks) {
+                    res.urls[req.url] = marks;
+                    chrome.storage.local.set(res);
+                }
 
                 common.detectBrowser().then(b => {
                     if (b !== common.FIREFOX_ANDROID) {
@@ -103,13 +104,18 @@ const takeScreenshotAndUpdateBadgeOrClearMarks = (req, sender, sendResponse) => 
     }
     else if (req.clear_marks) {
         chrome.storage.local.get(null, (res) => {
-            // TODO Do all these only if permanent_marks is true?
-            delete(res.urls[req.url]);
-            chrome.storage.local.set(res);
-            if (res.permanent_marks)
+            if (res.permanent_marks) {
+                delete(res.urls[req.url]);
+                chrome.storage.local.set(res);
                 idb.del(req.url);
+            }
         });
         setBrowserActionBadgeOrTitle('', sender.tab.id);
+    }
+    else if (req.get_first_marks) {
+        chrome.storage.local.get(null, res => {
+            sendResponse({ marks: res.urls[req.url], });
+        });
     }
 
     return true;
@@ -118,16 +124,16 @@ const takeScreenshotAndUpdateBadgeOrClearMarks = (req, sender, sendResponse) => 
 /**
  * Update browser action's number of marked positions in badge text, when
  * active tab changes.
- * @function updateMarkBadge
+ * @function updateMarkBadgeOnActivated
  * @async
  * @param info {Object}
  */
-const updateMarkBadge = async (info) => {
+const updateMarkBadgeOnActivated = async (info) => {
     const res = await chrome.tabs.sendMessage(info.tabId, { getMarks: true, });
     if (res) {
         const marks = res.marks;
         if (marks != null && marks.constructor === Array && marks.length > 0) {
-            const n = String(common.marksInUse(marks));
+            const n = common.marksInUse(marks);
             setBrowserActionBadgeOrTitle(n, info.tabId);
         }
         else
@@ -135,30 +141,32 @@ const updateMarkBadge = async (info) => {
     }
 };
 
-/**
- * When loading a page permanent marks on, send marks and set browser action
- * badge.
- * @function setMarks
+/** When loading a page permanent marks on, update browser action badge or if
+ * permanent marks were on and there were marks and permanent marks were set
+ * off, clear marks.
+ * @function updateMarkBadgeOnUpdate
  * @param tabId {Integer} The ID of the updated tab.
  * @param changeInfo {Object} Properties of the tab that changed.
  * @param tab {tabs.Tab} The new state of the tab.
  */
-const setMarks = (tabId, changeInfo, tab) => {
+const updateMarkBadgeOnUpdate = (tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete') {
         chrome.storage.local.get(null, (res) => {
             if (res.permanent_marks && tab.url in res.urls) {
-                chrome.tabs.sendMessage(tabId, { marks: res.urls[tab.url], });
-                const n = String(common.marksInUse(res.urls[changeInfo.url]));
+                const n = common.marksInUse(res.urls[tab.url]);
                 setBrowserActionBadgeOrTitle(n, tabId);
+            }
+            else {
+                chrome.tabs.sendMessage(tabId, { clear_marks: true, });
             }
         });
     }
 };
 
 setDefaultOptions();
-chrome.runtime.onMessage.addListener(takeScreenshotAndUpdateBadgeOrClearMarks);
-chrome.tabs.onActivated.addListener(updateMarkBadge);
-chrome.tabs.onUpdated.addListener(setMarks);
+chrome.runtime.onMessage.addListener(messageListener);
+chrome.tabs.onActivated.addListener(updateMarkBadgeOnActivated);
+browser.tabs.onUpdated.addListener(updateMarkBadgeOnUpdate);
 // TODO Not needed? Firefox for Android needs?
 common.detectBrowser().then((b) => {
     if (b === common.FIREFOX_ANDROID) {

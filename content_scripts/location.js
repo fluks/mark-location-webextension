@@ -14,6 +14,7 @@ let
 
 /**
  * Convert undefined value to false.
+ * @function undefinedToFalse
  * @param a - Some variable.
  * @return {Boolean} If a is undefined return false, otherwise return a.
  */
@@ -25,6 +26,7 @@ const undefinedToFalse = (a) => {
 
 /**
  * Check if the pressed key shortcut and the shortcut from the settings match.
+ * @function keysMatch
  * @param {KeyboardEvent} pressedKey - The pressed key combo.
  * @param {Object} setKey - Keys from settings.
  * @return {Boolean} True if the keys match, false otherwise.
@@ -37,8 +39,8 @@ const keysMatch = (pressedKey, setKey) => {
 };
 
 /**
- * Handle the keys pressed.
- * Mark a location or go to a location on a page.
+ * Handle the keys pressed. Mark a location or go to a location on a page.
+ * @function keydownHandler
  * @param {Object} e - Object returned by the {@link crossBrowserKey} function.
  */
 const keydownHandler = (e) => {
@@ -72,7 +74,7 @@ const keydownHandler = (e) => {
 
                 marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
                 chrome.runtime.sendMessage(
-                    { screenshot: true, marks: marks, }, res => {
+                    { screenshot: true, marks: marks, url: window.location.href, }, res => {
                         marks[i].image = res.image;
                     }
                 );
@@ -89,8 +91,7 @@ const keydownHandler = (e) => {
     });
 };
 
-/** Listen for requests from the popup and do something according to the
- * request.
+/** @function messageListener
  * @param {Object} req - Request is one of 'getMarks' {Bool}, 'mark' {Int} or
  * 'scroll' {Int}.
  * @param {MessageSender} sender
@@ -98,7 +99,7 @@ const keydownHandler = (e) => {
  * @return Return always true to send the response asynchronously, otherwise
  * the sender never gets the response.
  */
-const popupListener = (req, sender, sendResponse) => {
+const messageListener = (req, sender, sendResponse) => {
     if (req.getMarks) {
         sendResponse({ marks: marks });
     }
@@ -125,4 +126,15 @@ const popupListener = (req, sender, sendResponse) => {
 };
 
 window.addEventListener('keydown', keydownHandler);
-chrome.runtime.onMessage.addListener(popupListener);
+chrome.runtime.onMessage.addListener(messageListener);
+/* Get permanent marks on page load, message needs to be sent from content
+ * script, if sent from background page, content script message listener isn't
+ * ready.
+ */
+chrome.storage.local.get('permanent_marks', res => {
+    if (res.permanent_marks) {
+        chrome.runtime.sendMessage({ get_first_marks: true, url: window.location.href, }, res => {
+            marks = res.marks ? res.marks : [];
+        });
+    }
+});
