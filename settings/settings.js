@@ -16,7 +16,7 @@ let keys = {};
  * @param {String} id - The id attribute of the key.
  */
 const restoreKey = (id) => {
-    chrome.storage.local.get(null, res => {
+    chrome.storage.local.get([ 'mark_key', 'scroll_key' ], res => {
         if (id.includes('mark')) {
             mark.value = res.mark_key.string;
             keys[mark.id] = res.mark_key.keys;
@@ -31,7 +31,7 @@ const restoreKey = (id) => {
 /** Restore options for viewing.
  */
 const restoreOptions = () => {
-    chrome.storage.local.get(null, res => {
+    chrome.storage.local.get([ 'mark_key', 'scroll_key', 'captured_tab_size', 'permanent_marks' ], res => {
         mark.value = res.mark_key.string;
         keys[mark.id] = res.mark_key.keys;
         _scroll.value = res.scroll_key.string;

@@ -57,7 +57,7 @@ const showImage = (e, image, el, tooltip) => {
             });
         });
     }
-    chrome.storage.local.get(null, async (res) => {
+    chrome.storage.local.get('captured_tab_size', async (res) => {
         if (await common.detectBrowser() === common.CHROME)
             image.style.height = res.captured_tab_size;
         else

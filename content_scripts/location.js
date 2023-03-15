@@ -44,7 +44,7 @@ const keysMatch = (pressedKey, setKey) => {
  * @param {Object} e - Object returned by the {@link crossBrowserKey} function.
  */
 const keydownHandler = (e) => {
-    chrome.storage.local.get(null, res => {
+    chrome.storage.local.get([ 'mark_key', 'scroll_key' ], res => {
         if (keysMatch(e, res.mark_key.keys)) {
             window.clearTimeout(markTimeout);
             window.clearTimeout(gotoTimeout);
