@@ -37,6 +37,7 @@
     "background": {
         "scripts": [
             "common/browser-polyfill.js",
+            "common/idb.js",
             "common/common.js",
             "background/background.js"
         ]
