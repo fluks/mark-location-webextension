@@ -23,7 +23,7 @@
 
     "content_scripts": [
         {
-            "matches": [ "*://*/*" ],
+            "matches": [ "<all_urls>" ],
             "js": [
                 "common/browser-polyfill.js",
                 "common/common.js",
