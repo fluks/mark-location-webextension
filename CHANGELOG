@@ -1,3 +1,7 @@
+0.5.2 Sun, 26 Mar 2023 20:45:32 +0300
+
+  * Fix captured image not resizing in Chrome.
+
 0.5.1 Sun, 26 Mar 2023 00:30:23 +0200
 
   * Add support for all supported protocols.
