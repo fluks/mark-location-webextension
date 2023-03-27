@@ -11,8 +11,8 @@ const
 
 let keys = {};
 
-/**
- * Restore key from the setttings.
+/** Restore key from the setttings.
+ * @function restoreKey
  * @param {String} id - The id attribute of the key.
  */
 const restoreKey = (id) => {
@@ -29,6 +29,7 @@ const restoreKey = (id) => {
 };
 
 /** Restore options for viewing.
+ * @function restoreOptions
  */
 const restoreOptions = () => {
     chrome.storage.local.get([ 'mark_key', 'scroll_key', 'captured_tab_size', 'permanent_marks' ], res => {
@@ -42,6 +43,7 @@ const restoreOptions = () => {
 };
 
 /** Save options.
+ * @function saveOptions
  * @param {EventTarget} e
  */
 const saveOptions = (e) => {
@@ -67,6 +69,7 @@ const saveOptions = (e) => {
 };
 
 /** Don't save options, restore old ones.
+ * @function cancelOptions
  * @param {EventTarget} e
  */
 const cancelOptions = (e) => {
@@ -75,8 +78,8 @@ const cancelOptions = (e) => {
     save.disabled = false;
 };
 
-/**
- * Clear the key field.
+/** Clear the key field.
+ * @function emptyValue
  * @param {Object} e - Event.
  */
 const emptyValue = (e) => {
@@ -84,18 +87,18 @@ const emptyValue = (e) => {
     save.disabled = true;
 };
 
-/**
- * Validate keys. Control and some regular key must be used.
+/** Validate keys.
+ * @function areKeysValid
  * @param {Object} keys - Current key combo, alt, ctrl, shift and key.
  * @return {Boolean} True if keys are valid, false otherwise.
  */
 const areKeysValid = (keys) => {
-    return keys.ctrl && keys.key.length === 1;
+    return (keys.ctrl || keys.alt || keys.shift) && keys.key.length === 1;
 };
 
-/**
- * Read the pressed key combo, assign it to a variable and construct the key
+/** Read the pressed key combo, assign it to a variable and construct the key
  * string from it.
+ * @function getKeyShortcut
  * @param {Object} e - Event.
  */
 const getKeyShortcut = (e) => {
@@ -120,8 +123,8 @@ const getKeyShortcut = (e) => {
     save.disabled = !areKeysValid(keys[id]) || mark.value === _scroll.value;
 };
 
-/**
- * Validate the key combo when focus leaves the key field.
+/** Validate the key combo when focus leaves the key field.
+ * @function validate
  * @param {Object} e - Event.
  */
 const validate = (e) => {
