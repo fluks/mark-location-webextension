@@ -26,7 +26,7 @@ chromium_files := \
 firefox-bin := ~/Downloads/firefox_dev/firefox
 firefox-profile := dev-edition-default
 
-version_suffix := $(shell grep -o '[0-9]\.[0-9]' manifest.json | head -1 | sed 's/\./_/g')
+version_suffix := $(shell grep -oP '[0-9]\.[0-9](\.[0-9])?' manifest.json | head -1 | sed 's/\./_/g')
 
 .PHONY: run firefox chromium clean change_to_firefox \
 	change_to_chromium lint doc compare_install_and_source supported_versions \
@@ -42,9 +42,10 @@ run:
 		--firefox-binary $(firefox-bin) \
 		--firefox-profile $(firefox-profile) \
 		--pref=intl.locale.requested=en \
-		-u https://en.wikipedia.org/wiki/Main_Page \
+		--devtools \
 		-u about:debugging \
-		-u about:addons
+		-u about:addons \
+		-u https://en.wikipedia.org/wiki/Main_Page
 
 firefox: change_to_firefox
 	# Default screenshot size 100%.
