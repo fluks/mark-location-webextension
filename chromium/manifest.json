@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Mark Location",
     "version": "0.5.3",
     "description": "__MSG_extensionDescription__",
@@ -27,7 +27,7 @@
         }
     ],
 
-    "browser_action": {
+    "action": {
         "browser_style": true,
         "default_icon": "chromium/mark_location_128.png",
         "default_title": "Mark Location",
@@ -35,17 +35,15 @@
     },
 
     "background": {
-        "scripts": [
-            "common/browser-polyfill.js",
-            "common/idb.js",
-            "common/common.js",
-            "background/background.js"
-        ]
+        "service_worker": "background/background.js"
     },
 
     "permissions": [
         "storage",
-        "activeTab",
+        "activeTab"
+    ],
+
+    "host_permissions": [
         "<all_urls>"
     ]
 }

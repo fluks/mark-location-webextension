@@ -1,5 +1,8 @@
 /** @module background */
-'use strict';
+
+importScripts("/common/browser-polyfill.js");
+importScripts("/common/common.js");
+importScripts("/common/idb.js");
 
 /** Set default options on install.
  * @function setDefaultOptions
@@ -48,7 +51,7 @@ const setDefaultOptions = () => {
 const setBrowserActionBadgeOrTitle = (n, tabId) => {
     common.detectBrowser().then(b => {
         if (b !== common.FIREFOX_ANDROID) {
-            chrome.browserAction.setBadgeText({
+            chrome.action.setBadgeText({
                 text: String(n),
                 tabId: tabId,
             });
@@ -60,7 +63,7 @@ const setBrowserActionBadgeOrTitle = (n, tabId) => {
             // string on tab update, we have to set it explicitly.
             else
                 n = 'Mark Location';
-            chrome.browserAction.setTitle({
+            chrome.action.setTitle({
                 title: n,
                 tabId: tabId,
             });
@@ -166,7 +169,7 @@ const updateMarkBadgeOnUpdate = (tabId, changeInfo, tab) => {
 setDefaultOptions();
 chrome.runtime.onMessage.addListener(messageListener);
 chrome.tabs.onActivated.addListener(updateMarkBadgeOnActivated);
-browser.tabs.onUpdated.addListener(updateMarkBadgeOnUpdate);
+chrome.tabs.onUpdated.addListener(updateMarkBadgeOnUpdate);
 // TODO Not needed? Firefox for Android needs?
 common.detectBrowser().then((b) => {
     if (b === common.FIREFOX_ANDROID) {
