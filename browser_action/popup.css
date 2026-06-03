@@ -10,7 +10,7 @@ span {
 }
 
 span[id^='mark-']:hover, .clickable:hover {
-  background-color: gray;
+  background-color: gray !important;
   cursor: pointer;
 }
 
@@ -33,8 +33,21 @@ span[id^='mark-']:hover, .clickable:hover {
   margin-right: auto;
   width: 100%;
   height: 100%;
+  border-spacing: 2px;
 }
 
 .row {
   display: table-row;
+}
+
+.row:has(.scroll) * {
+  background-color: #F4F4F4;
+}
+
+#clear-marks {
+  margin-top: 5px;
+}
+
+.center {
+  text-align: center;
 }

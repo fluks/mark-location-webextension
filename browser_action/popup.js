@@ -13,7 +13,7 @@ const createScrollNode = i => {
     const scroll = document.createElement('span');
     scroll.setAttribute('id', 'scroll-' + i);
     scroll.textContent = _M('scrollCellText');
-    scroll.className = 'clickable';
+    scroll.classList.add('clickable', 'scroll');
 
     return scroll;
 };
