@@ -8,7 +8,7 @@
         "description": "Tooltip text to show when the captured tab image is hidden."
     },
     "scrollCellText": {
-        "message": "Scroll",
+        "message": "Go to",
         "description": "Text shown in the popup's scroll to cell."
     },
     "imageTitle": {
