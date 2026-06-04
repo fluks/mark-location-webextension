@@ -132,15 +132,20 @@ const messageListener = (req, sender, sendResponse) => {
  * @param info {Object}
  */
 const updateMarkBadgeOnActivated = async (info) => {
-    const res = await chrome.tabs.sendMessage(info.tabId, { getMarks: true, });
-    if (res) {
-        const marks = res.marks;
-        if (marks != null && marks.constructor === Array && marks.length > 0) {
-            const n = common.marksInUse(marks);
-            setBrowserActionBadgeOrTitle(n, info.tabId);
+    try {
+        const res = await chrome.tabs.sendMessage(info.tabId, { getMarks: true, });
+        if (res) {
+            const marks = res.marks;
+            if (marks != null && marks.constructor === Array && marks.length > 0) {
+                const n = common.marksInUse(marks);
+                setBrowserActionBadgeOrTitle(n, info.tabId);
+            }
+            else
+                setBrowserActionBadgeOrTitle('', info.tabId);
         }
-        else
-            setBrowserActionBadgeOrTitle('', info.tabId);
+    }
+    catch(error) {
+        console.warn(`Failed to update mark badge: ${error}`);
     }
 };
 
