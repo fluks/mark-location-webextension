@@ -39,56 +39,91 @@ const keysMatch = (pressedKey, setKey) => {
 };
 
 /**
+ * @function addScrollbarIndicator
+ * @param {Number} i - Mark index.
+ * @param {Number} yOffset - Y coordinate location.
+ */
+const addScrollbarIndicator = (i, yOffset, size, fgColor, bgColor) => {
+    const div = document.createElement('div');
+    div.classList.add('mark-location-scrollbar-indicator');
+    div.style.setProperty('--ball-number', `"${i}"`);
+    div.style.setProperty('--number-color', fgColor);
+    div.style.setProperty('--ball-color', bgColor);
+    div.style.setProperty('--ball-size', `${size}px`);
+    div.style.setProperty('--number-size', `${size * 0.75}px`);
+    div.style.setProperty('top', `${yOffset}px`);
+    document.body.appendChild(div);
+};
+
+/**
  * Handle the keys pressed. Mark a location or go to a location on a page.
  * @function keydownHandler
  * @param {Object} e - Object returned by the {@link crossBrowserKey} function.
  */
 const keydownHandler = (e) => {
-    chrome.storage.local.get([ 'mark_key', 'scroll_key' ], res => {
-        if (keysMatch(e, res.mark_key.keys)) {
-            window.clearTimeout(markTimeout);
-            window.clearTimeout(gotoTimeout);
-            gotoPressed = false;
-
-            markPressed = true;
-            markTimeout = window.setTimeout(function() {
-                markPressed = false;
-            }, TIME_DELTA_INDEX);
-        }
-        else if (keysMatch(e, res.scroll_key.keys)) {
-            window.clearTimeout(markTimeout);
-            window.clearTimeout(gotoTimeout);
-            markPressed = false;
-
-            gotoPressed = true;
-            gotoTimeout = window.setTimeout(function() {
-                gotoPressed = false;
-            }, TIME_DELTA_INDEX);
-        }
-        else if ('1234567890'.includes(e.key)) {
-            let i = parseInt(e.key);
-
-            if (markPressed) {
+    chrome.storage.local.get([
+            'mark_key',
+            'scroll_key',
+            'scrollbar_indicator',
+            'scrollbar_indicator_size',
+            'scrollbar_indicator_fg_color',
+            'scrollbar_indicator_bg_color',
+        ],
+        res => {
+            if (keysMatch(e, res.mark_key.keys)) {
                 window.clearTimeout(markTimeout);
-                markPressed = false;
-
-                marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
-                chrome.runtime.sendMessage(
-                    { screenshot: true, marks: marks, url: window.location.href, }, res => {
-                        marks[i].image = res.image;
-                    }
-                );
-            }
-            else if (gotoPressed) {
                 window.clearTimeout(gotoTimeout);
                 gotoPressed = false;
 
-                let offsets = marks[i];
-                if (offsets)
-                    window.scrollTo(offsets.x, offsets.y);
+                markPressed = true;
+                markTimeout = window.setTimeout(function() {
+                    markPressed = false;
+                }, TIME_DELTA_INDEX);
+            }
+            else if (keysMatch(e, res.scroll_key.keys)) {
+                window.clearTimeout(markTimeout);
+                window.clearTimeout(gotoTimeout);
+                markPressed = false;
+
+                gotoPressed = true;
+                gotoTimeout = window.setTimeout(function() {
+                    gotoPressed = false;
+                }, TIME_DELTA_INDEX);
+            }
+            else if ('1234567890'.includes(e.key)) {
+                let i = parseInt(e.key);
+
+                if (markPressed) {
+                    window.clearTimeout(markTimeout);
+                    markPressed = false;
+
+                    marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
+                    if (res.scrollbar_indicator) {
+                        addScrollbarIndicator(
+                            i,
+                            window.pageYOffset,
+                            res.scrollbar_indicator_size,
+                            res.scrollbar_indicator_fg_color,
+                            res.scrollbar_indicator_bg_color,
+                        );
+                    }
+                    chrome.runtime.sendMessage(
+                        { screenshot: true, marks: marks, url: window.location.href, }, res => {
+                            marks[i].image = res.image;
+                        }
+                    );
+                }
+                else if (gotoPressed) {
+                    window.clearTimeout(gotoTimeout);
+                    gotoPressed = false;
+
+                    let offsets = marks[i];
+                    if (offsets)
+                        window.scrollTo(offsets.x, offsets.y);
+                }
             }
         }
-    });
+    );
 };
 
 /** @function messageListener
@@ -106,6 +141,23 @@ const messageListener = (req, sender, sendResponse) => {
     else if (req.mark) {
         const i = req.mark;
         marks[i] = { x: window.pageXOffset, y: window.pageYOffset };
+        chrome.storage.local.get([
+                'scrollbar_indicator',
+                'scrollbar_indicator_size',
+                'scrollbar_indicator_fg_color',
+                'scrollbar_indicator_bg_color',
+            ], res => {
+                if (res.scrollbar_indicator) {
+                    addScrollbarIndicator(
+                        i,
+                        window.pageYOffset,
+                        res.scrollbar_indicator_size,
+                        res.scrollbar_indicator_fg_color,
+                        res.scrollbar_indicator_bg_color,
+                    );
+                }
+            }
+        );
         chrome.runtime.sendMessage({ screenshot: true, marks: marks, url: window.location.href, },
             (res) => { marks[i].image = res.image; },
         );
@@ -116,6 +168,7 @@ const messageListener = (req, sender, sendResponse) => {
     }
     else if (req.clear_marks) {
         marks = [];
+        document.querySelectorAll('.mark-location-scrollbar-indicator').forEach(e => e.remove());
         chrome.runtime.sendMessage({ clear_marks: true, url: window.location.href, });
     }
     else if (req.marks) {
@@ -131,10 +184,29 @@ chrome.runtime.onMessage.addListener(messageListener);
  * script, if sent from background page, content script message listener isn't
  * ready.
  */
-chrome.storage.local.get('permanent_marks', res => {
-    if (res.permanent_marks) {
-        chrome.runtime.sendMessage({ get_first_marks: true, url: window.location.href, }, res => {
-            marks = res.marks ? res.marks : [];
+chrome.storage.local.get([
+        'permanent_marks',
+        'scrollbar_indicator',
+        'scrollbar_indicator_size',
+        'scrollbar_indicator_fg_color',
+        'scrollbar_indicator_bg_color',
+    ], res1 => {
+    if (res1.permanent_marks) {
+        chrome.runtime.sendMessage({ get_first_marks: true, url: window.location.href, }, res2 => {
+            marks = res2.marks ? res2.marks : [];
+            if (res1.scrollbar_indicator) {
+                res2.marks.forEach((m, i) => {
+                    if (m) {
+                        addScrollbarIndicator(
+                            i,
+                            m.y,
+                            res1.scrollbar_indicator_size,
+                            res1.scrollbar_indicator_fg_color,
+                            res1.scrollbar_indicator_bg_color,
+                        );
+                    }
+                });
+            }
         });
     }
 });

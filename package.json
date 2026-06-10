@@ -1,10 +1,11 @@
 {
   "devDependencies": {
-    "web-ext": "latest",
     "eslint": "latest",
-    "jsdoc": "latest"
+    "jsdoc": "latest",
+    "web-ext": "latest"
   },
   "dependencies": {
+    "@eastdesire/jscolor": "^2.5.2",
     "idb-keyval": "^6.2.0"
   }
 }

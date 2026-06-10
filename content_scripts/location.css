@@ -1,0 +1,27 @@
+:root {
+  --ball-size: 25px;
+  --ball-color: #378ADDFF;
+  --ball-number: "1";
+  --number-color: #FFFFFFFF;
+  --number-size: 19px;
+}
+
+.mark-location-scrollbar-indicator {
+  width: var(--ball-size);
+  height: var(--ball-size);
+  background: var(--ball-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  position: absolute;
+  right: 1px;
+}
+
+.mark-location-scrollbar-indicator::after {
+  content: var(--ball-number);
+  color: var(--number-color);
+  font-size: var(--number-size);
+  font-weight: 1000;
+}

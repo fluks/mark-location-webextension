@@ -25,7 +25,17 @@
         <option value="100%">100%</option>
       </select><br>
       <label for="permanent-marks" data-l10n-id="permanentMarksLabel">Permanent Marks</label>
-      <input type="checkbox" id="permanent-marks">
+      <input type="checkbox" id="permanent-marks"><br>
+      <label for="scrollbar-indicator" data-l10n-id="scrollbarIndicatorLabel">Scrollbar Indicator</label>
+      <input type="checkbox" id="scrollbar-indicator">
+      <div id="scrollbar-indicator-settings">
+        <label for="scrollbar-indicator-size" data-l10n-id="scrollbarIndicatorSizeLabel">Size</label>
+        <input type="number" id="scrollbar-indicator-size" size="4" min="1"><br>
+        <label for="scrollbar-indicator-fg-color" data-l10n-id="scrollbarIndicatorFGColorLabel">Foreground Color</label>
+        <input type="text" id="scrollbar-indicator-fg-color"><br>
+        <label for="scrollbar-indicator-bg-color" data-l10n-id="scrollbarIndicatorBGColorLabel">Background Color</label>
+        <input type="text" id="scrollbar-indicator-bg-color"><br>
+      </div>
       <div id="button-panel">
         <button type="button" id="cancel" accesskey="C" data-l10n-id="cancelButton"><span class="accesskey">C</span>ancel</button>
         <button type="button" id="save" accesskey="S" data-l10n-id="saveButton"><span class="accesskey">S</span>ave</button>
@@ -33,5 +43,6 @@
       <div><span id="info-message" data-l10n-id="infoMessage">Settings saved</span></div>
     </form>
     <script src="settings.js"></script>
+    <script src="jscolor.js"></script>
   </body>
 </html>

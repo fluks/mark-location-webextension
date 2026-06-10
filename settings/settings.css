@@ -15,3 +15,7 @@ input, label, button, select {
   margin: 15px 0 0 5px;
   visibility: hidden;
 }
+
+#scrollbar-indicator-settings {
+  margin-left: 20px;
+}
