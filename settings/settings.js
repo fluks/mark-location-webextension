@@ -7,7 +7,11 @@ const
     _scroll = document.querySelector('#scroll_key'),
     tabSize = document.querySelector('#captured_tab_size'),
     info = document.querySelector('#info-message'),
-    permanentMarks = document.querySelector('#permanent-marks');
+    permanentMarks = document.querySelector('#permanent-marks'),
+    scrollbarIndicator = document.querySelector('#scrollbar-indicator'),
+    scrollbarIndicatorSize = document.querySelector('#scrollbar-indicator-size'),
+    scrollbarIndicatorFGColor = document.querySelector('#scrollbar-indicator-fg-color'),
+    scrollbarIndicatorBGColor = document.querySelector('#scrollbar-indicator-bg-color');
 
 let keys = {};
 
@@ -28,17 +32,32 @@ const restoreKey = (id) => {
     });
 };
 
+/** Enable or disable settings related to scrollbar indicator
+ * @function enableScrollbarIndicatorSettings
+ * @param {Boolean} on - True = enable.
+ */
+const enableScrollbarIndicatorSettings = (on) => {
+    document.querySelectorAll('#scrollbar-indicator-settings input').forEach(e => e.disabled = !on);
+};
+
 /** Restore options for viewing.
  * @function restoreOptions
  */
 const restoreOptions = () => {
-    chrome.storage.local.get([ 'mark_key', 'scroll_key', 'captured_tab_size', 'permanent_marks' ], res => {
+    chrome.storage.local.get(null, res => {
         mark.value = res.mark_key.string;
         keys[mark.id] = res.mark_key.keys;
         _scroll.value = res.scroll_key.string;
         keys[_scroll.id] = res.scroll_key.keys;
         tabSize.value = res.captured_tab_size;
         permanentMarks.checked = res.permanent_marks;
+        scrollbarIndicator.checked = res.scrollbar_indicator;
+        enableScrollbarIndicatorSettings(scrollbarIndicator.checked);
+        scrollbarIndicatorSize.value = res.scrollbar_indicator_size;
+        scrollbarIndicatorFGColor.value = res.scrollbar_indicator_fg_color;
+        scrollbarIndicatorFGColor.jscolor.fromString(res.scrollbar_indicator_fg_color);
+        scrollbarIndicatorBGColor.value = res.scrollbar_indicator_bg_color;
+        scrollbarIndicatorBGColor.jscolor.fromString(res.scrollbar_indicator_bg_color);
     });
 };
 
@@ -60,6 +79,10 @@ const saveOptions = (e) => {
         },
         captured_tab_size: tabSize.value,
         permanent_marks: permanentMarks.checked,
+        scrollbar_indicator: scrollbarIndicator.checked,
+        scrollbar_indicator_size: scrollbarIndicatorSize.value,
+        scrollbar_indicator_fg_color: scrollbarIndicatorFGColor.value,
+        scrollbar_indicator_bg_color: scrollbarIndicatorBGColor.value,
     });
 
     info.setAttribute('style', 'visibility: visible;');
@@ -136,7 +159,32 @@ const validate = (e) => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', restoreOptions);
+/**
+ * @function addJSColors
+ */
+const addJSColors = () => {
+    jscolor.presets.default = {
+        palette: [
+            '#FF0000FF','#FF4500FF','#FF7F00FF','#FFD700FF','#FFFF00FF',
+            '#ADFF2FFF','#00FF00FF','#00FA9AFF','#00FFFFFF','#1E90FFFF',
+            '#0000FFFF','#8A2BE2FF','#FF00FFFF','#FF1493FF','#FFFFFFFF',
+            '#C0C0C0FF','#808080FF','#404040FF','#000000FF','#8B4513FF',
+        ],
+        paletteCols: 10,
+        paletteHeight: 16,
+        previewSize: 32,
+        alpha: true,
+        format: 'hexa',
+    };
+    new JSColor(scrollbarIndicatorFGColor);
+    new JSColor(scrollbarIndicatorBGColor);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    restoreOptions();
+    addJSColors();
+});
+scrollbarIndicator.addEventListener('change', (e) => enableScrollbarIndicatorSettings(e.target.checked));
 save.addEventListener('click', saveOptions);
 cancel.addEventListener('click', cancelOptions);
 [ mark, _scroll ].forEach(e => {

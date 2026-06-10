@@ -31,6 +31,12 @@ const setDefaultOptions = () => {
             options.captured_tab_size = '100%';
         if (!res || !('permanent_marks' in res))
             options.permanent_marks = true;
+        if (!res || !('scrollbar_indicator' in res)) {
+            options.scrollbar_indicator = false;
+            options.scrollbar_indicator_size = 25;
+            options.scrollbar_indicator_fg_color = '#FFFFFFFF';
+            options.scrollbar_indicator_bg_color = '#378ADDFF';
+        }
         if (!res || !('urls' in res))
             options.urls = {};
 
