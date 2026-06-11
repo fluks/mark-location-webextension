@@ -11,7 +11,7 @@ common_files := \
 	manifest.json \
 	background/* \
 	browser_action/* \
-	content_scripts/location.js \
+	content_scripts/* \
 	settings/* \
 	common/* \
 	LICENSE
