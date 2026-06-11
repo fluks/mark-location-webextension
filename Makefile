@@ -23,20 +23,24 @@ chromium_files := \
 	chromium/mark_location*.png
 # Change this to point to a Firefox binary or remove the line from run target
 # to use the default Firefox in your path.
-firefox-bin := ~/Downloads/firefox_dev/firefox
+firefox-bin := ~/programs/firefox_dev/firefox
 firefox-profile := dev-edition-default
+
+android-device := $(shell adb devices | head -2 | tail -1 | cut -f 1)
 
 version_suffix := $(shell grep -oP '[0-9]\.[0-9](\.[0-9])?' manifest.json | head -1 | sed 's/\./_/g')
 
 .PHONY: run firefox chromium clean change_to_firefox \
 	change_to_chromium lint doc compare_install_and_source supported_versions \
-	install_dependencies
+	install_dependencies run-firefox-android show_doc supported_versions
 
-# Run on FoA:
-# web-ext run \
-# 	--target=firefox-android \
-# 	--android-device=$(firefox_android_apk) \
-# 	--firefox-apk=$(android_device_id)
+run-firefox-android:
+	web-ext run \
+	   --target=firefox-android \
+	   --android-device=$(android-device) \
+	   --firefox-apk=org.mozilla.fenix \
+	   --firefox-apk-component=HomeActivity
+
 run:
 	web-ext run \
 		--firefox-binary $(firefox-bin) \
@@ -78,8 +82,15 @@ lint: change_to_firefox
 doc:
 	jsdoc -c conf.json -d doc $(js)
 
+show_doc:
+	$(shell firefox file://$(shell readlink -f doc/index.html))
+
 clean:
-	rm mark_location_firefox.xpi manifest.json
+	rm *.xpi *.zip manifest.json
+
+supported_versions:
+	# Set verbosity on command line: verbosity='-v{1,2}'
+	min_ext_ver.pl -b firefox,chrome,andr $(verbosity) $(js)
 
 # usage: make compare_install_and_source install=PATH1 source=PATH2
 # where PATH1 is path to the installed addon in
