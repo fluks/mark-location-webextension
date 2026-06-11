@@ -1,3 +1,9 @@
+1.0.0 Thu, 11 Jun 2026 13:09:55 +0300
+
+  * Add scrollbar indicators.
+  * Move options page to a new tab.
+  * Use new Eslint configuration format.
+
 0.7.0 Thu, 04 Jun 2026 19:38:22 +0300
 
   * Small UI changes.
