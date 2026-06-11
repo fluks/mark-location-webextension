@@ -3,8 +3,10 @@ input, label, button, select {
   font-family: sans-serif;
 }
 
-#button-panel {
-  margin-top: 15px;
+#button-panel, #info-panel {
+  justify-self: center;
+  grid-column: 1 / -1;
+  margin-top: 10px;
 }
 
 .accesskey {
@@ -16,6 +18,13 @@ input, label, button, select {
   visibility: hidden;
 }
 
-#scrollbar-indicator-settings {
+.scrollbar-indicator-setting {
   margin-left: 20px;
+}
+
+form {
+  display: grid;
+  grid-template-columns: max-content min-content;
+  justify-items: left;
+  width: min-content;
 }
