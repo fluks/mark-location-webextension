@@ -37,7 +37,7 @@ const restoreKey = (id) => {
  * @param {Boolean} on - True = enable.
  */
 const enableScrollbarIndicatorSettings = (on) => {
-    document.querySelectorAll('#scrollbar-indicator-settings input').forEach(e => e.disabled = !on);
+    document.querySelectorAll('.scrollbar-indicator-setting').forEach(e => e.disabled = !on);
 };
 
 /** Restore options for viewing.
